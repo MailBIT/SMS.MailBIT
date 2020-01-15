@@ -1,0 +1,68 @@
+VB 6 Sample Code
+
+Private Sub Command1_Click()
+
+    Dim DataToSubmit As String
+    Dim objXML As Object
+    Dim msg As String
+    Dim user As String
+    Dim msisdn As String
+    Dim sid As String
+    Dim fl As String
+    Dim URL As String
+
+'Set these variables
+user= "Your username";
+
+msisdn = "66894828550";
+
+'fl is for Flash message
+
+fl = "0";
+
+'Sender ID should 6 characters long.
+sid = "TESTIN"; 
+
+' this url encode function may not work fully functional.Pl refer doc.
+msg = URLEncode(" Your message ")
+
+
+URL = "http://sms.mailbit.co.th:8080/vendorsms/pushsms.aspx?" 
+ 
+Set objXML = CreateObject("Microsoft.XMLHTTP")
+objXML.Open "POST", URL , False
+objXML.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+    
+objXML.send "user=" + user + "&password=" + password + "&msisdn=" + msisdn + "&msg=" + msg + "&sid=" + sid + "&fl=" + fl
+
+ If Len(objXML.responseText) > 0 Then
+        MsgBox objXML.responseText
+        
+ End If
+     
+End Sub
+
+Function URLEncode(ByVal Text As String) As String
+    Dim i As Integer
+    Dim acode As Integer
+    Dim char As String
+    
+    URLEncode = Text
+    
+    For i = Len(URLEncode) To 1 Step -1
+        acode = Asc(Mid$(URLEncode, i, 1))
+        Select Case acode
+            Case 48 To 57, 65 To 90, 97 To 122
+                ' don't touch alphanumeric chars
+            Case 32
+                ' replace space with "+"
+                Mid$(URLEncode, i, 1) = "+"
+            Case Else
+                ' replace punctuation chars with "%hex"
+                URLEncode = Left$(URLEncode, i - 1) & "%" & Hex$(acode) & Mid$ _
+                    (URLEncode, i + 1)
+        End Select
+    Next
+    
+End Function
+
